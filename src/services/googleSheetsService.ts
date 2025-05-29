@@ -6,18 +6,29 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-// Dùng biến môi trường để load credentials
-const keyPath = path.resolve(
-  process.env.GOOGLE_CREDENTIALS_PATH || ".secret/credentials.json"
-);
+let keys;
 
-if (!fs.existsSync(keyPath)) {
-  throw new Error(`Không tìm thấy file credentials tại: ${keyPath}`);
+// ✅ Ưu tiên lấy từ biến môi trường GOOGLE_CREDENTIALS (dạng base64)
+if (process.env.GOOGLE_CREDENTIALS) {
+  const decoded = Buffer.from(
+    process.env.GOOGLE_CREDENTIALS,
+    "base64"
+  ).toString("utf-8");
+  keys = JSON.parse(decoded);
+} else {
+  // ✅ Nếu không có, fallback về file local (chạy ở máy dev)
+  const keyPath = path.resolve(
+    process.env.GOOGLE_CREDENTIALS_PATH || ".secret/credentials.json"
+  );
+
+  if (!fs.existsSync(keyPath)) {
+    throw new Error(`Không tìm thấy file credentials tại: ${keyPath}`);
+  }
+
+  keys = JSON.parse(fs.readFileSync(keyPath, "utf-8"));
 }
 
-const keys = JSON.parse(fs.readFileSync(keyPath, "utf-8"));
-
-// Xác thực
+// ✅ Xác thực Google API
 const auth = new JWT({
   email: keys.client_email,
   key: keys.private_key,
@@ -25,7 +36,7 @@ const auth = new JWT({
   subject: keys.client_email,
 });
 
-const sheets = google.sheets({ version: "v4", auth });
+export const sheets = google.sheets({ version: "v4", auth });
 
 // Lấy dữ liệu từ bảng tính Google Sheets (thiết bị mượn)
 export const fetchMuonData = async () => {

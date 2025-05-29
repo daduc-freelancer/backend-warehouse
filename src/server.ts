@@ -13,7 +13,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: "https://warehouseadsun.vercel.app/", // Vercel
+    origin: "https://warehouseadsun.vercel.app", // Vercel
   })
 );
 

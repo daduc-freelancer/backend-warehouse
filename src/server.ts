@@ -21,7 +21,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173", // local
-      "https://frontend-warehouse.vercel.app", // Vercel
+      "https://warehouseadsun.vercel.app/", // Vercel
     ],
     methods: ["GET", "POST"],
   })

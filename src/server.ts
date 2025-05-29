@@ -11,10 +11,19 @@ const app = express();
 const port = process.env.PORT || 8080;
 app.use(express.json());
 
-// Cấu hình CORS cho phép frontend truy cập
+// // Cấu hình CORS cho phép frontend truy cập
+// app.use(
+//   cors({
+//     origin: "http://localhost:5173", // Thay thế với URL của frontend
+//   })
+// );
 app.use(
   cors({
-    origin: "http://localhost:5173", // Thay thế với URL của frontend
+    origin: [
+      "http://localhost:5173", // local
+      "https://frontend-warehouse.vercel.app", // Vercel
+    ],
+    methods: ["GET", "POST"],
   })
 );
 

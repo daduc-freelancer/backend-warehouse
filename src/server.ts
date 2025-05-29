@@ -19,11 +19,7 @@ app.use(express.json());
 // );
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173", // local
-      "https://warehouseadsun.vercel.app/", // Vercel
-    ],
-    methods: ["GET", "POST"],
+    origin: "https://warehouseadsun.vercel.app/", // Vercel
   })
 );
 

@@ -13,7 +13,10 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: "https://warehouseadsun.vercel.app", // Vercel
+    oorigin: "https://warehouseadsun.vercel.app",
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type"],
+    credentials: true,
   })
 );
 

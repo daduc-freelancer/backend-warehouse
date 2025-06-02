@@ -1,0 +1,4 @@
+.secret/credentials.json
+.env
+dist
+node_modules

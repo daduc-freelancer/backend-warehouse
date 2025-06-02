@@ -1,6 +1,7 @@
 import cors from "cors";
 import express, { Request, Response } from "express";
-import bcrypt from "bcryptjs";
+// import bcrypt from "bcryptjs";
+import crypto from "crypto";
 import {
   fetchMuonData,
   fetchTraData,
@@ -25,6 +26,10 @@ app.use(
     credentials: true,
   })
 );
+
+function hashSHA256(text: string): string {
+  return crypto.createHash("sha256").update(text).digest("hex");
+}
 
 app.get("/api/muon", async (req, res) => {
   try {
@@ -77,9 +82,16 @@ app.post("/api/login", async (req: Request, res: Response): Promise<any> => {
         .json({ message: "Email hoặc mật khẩu không đúng." });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    // const isMatch = await bcrypt.compare(password, user.password);
 
-    if (!isMatch) {
+    // if (!isMatch) {
+    //   return res
+    //     .status(401)
+    //     .json({ message: "Email hoặc mật khẩu không đúng." });
+    // }
+    const hashedInputPassword = password;
+    const storedHashedPassword = user.password;
+    if (hashedInputPassword !== storedHashedPassword) {
       return res
         .status(401)
         .json({ message: "Email hoặc mật khẩu không đúng." });

@@ -6,6 +6,9 @@ import {
   fetchTraData,
   fetchUsers,
 } from "./services/googleSheetsService";
+import jwt from "jsonwebtoken"; // ✅ Bổ sung dòng này
+
+const SECRET_KEY = process.env.JWT_SECRET || "your_jwt_secret_here"; // ✅ Thêm dòng này
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -84,6 +87,9 @@ app.post("/api/login", async (req: Request, res: Response): Promise<any> => {
 
     // Trả về thông tin user khi đăng nhập thành công
     return res.json({
+      token: jwt.sign({ email: user.email, name: user.name }, SECRET_KEY, {
+        expiresIn: "2h",
+      }),
       email: user.email,
       name: user.name,
     });

@@ -8,6 +8,7 @@ import {
   fetchUsers,
 } from "./services/googleSheetsService";
 import jwt from "jsonwebtoken"; // ✅ Bổ sung dòng này
+import { authenticateJWT } from "./middleware/authenticateJWT";
 
 const SECRET_KEY = process.env.JWT_SECRET || "your_jwt_secret_here"; // ✅ Thêm dòng này
 
@@ -31,7 +32,7 @@ function hashSHA256(text: string): string {
   return crypto.createHash("sha256").update(text).digest("hex");
 }
 
-app.get("/api/muon", async (req, res) => {
+app.get("/api/muon", authenticateJWT, async (req, res) => {
   try {
     const data = await fetchMuonData();
     // console.log(data); // Log dữ liệu
@@ -41,7 +42,7 @@ app.get("/api/muon", async (req, res) => {
   }
 });
 
-app.get("/api/tra", async (req, res) => {
+app.get("/api/tra", authenticateJWT, async (req, res) => {
   try {
     const data = await fetchTraData();
     res.json({ data });
@@ -100,7 +101,7 @@ app.post("/api/login", async (req: Request, res: Response): Promise<any> => {
     // Trả về thông tin user khi đăng nhập thành công
     return res.json({
       token: jwt.sign({ email: user.email, name: user.name }, SECRET_KEY, {
-        expiresIn: "2h",
+        expiresIn: "10m",
       }),
       email: user.email,
       name: user.name,

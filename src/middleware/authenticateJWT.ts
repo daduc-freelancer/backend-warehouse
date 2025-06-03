@@ -27,7 +27,12 @@ export const authenticateJWT = (
     (req as any).user = decoded;
     next();
   } catch (err) {
-    console.error("JWT Error:", err);
-    res.status(403).json({ message: "Token không hợp lệ hoặc đã hết hạn" });
+    if (err instanceof jwt.TokenExpiredError) {
+      res.status(401).json({ message: "Token đã hết hạn" });
+    } else {
+      res.status(403).json({ message: "Token không hợp lệ" });
+    }
+    // console.error("JWT Error:", err);
+    // res.status(403).json({ message: "Token không hợp lệ hoặc đã hết hạn" });
   }
 };
